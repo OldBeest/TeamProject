@@ -160,7 +160,7 @@
             margin-top: 20px;
         }
         .submit input[type="submit"] {
-            width: 70%;
+            width: 85%;
             height: 44px;
             background-color: #03C75A;
             color: white;
@@ -228,8 +228,8 @@
                 <a id="kakao_login" href="/dosignin"> 
                 <input type="submit" class="sBtn" value="로그인"  />
                </a> 
-               <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=19855f07670ed426b71b6c31e02bb899&redirect_uri=http://localhost:8181/kakao/oauth">
-                <input id="kakao_login" type="image" src="/images/kakao_login_medium_narrow2.png" alt="카카오 로그인" />
+               <a id="kakao_login"  href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=19855f07670ed426b71b6c31e02bb899&redirect_uri=http://localhost:8181/kakao/oauth">
+                <input type="image" src="/images/kakao_login_medium_narrow2.png" alt="카카오 로그인" />
                </a> 
             </div>
             </form>

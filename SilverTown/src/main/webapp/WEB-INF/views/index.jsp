@@ -909,108 +909,110 @@ rotate(
             setInterval(() => plusFacilitySlides(1), 3000); // 3초마다 슬라이드 변경
 
             </script>
-            <div class="foot-map">
-            	<input type="hidden" id="my-y-point" value="${my_y_cor }">
-            	<input type="hidden" id="my-x-point" value="${my_x_cor }">
-            	<c:forEach var="facility" items="${nearbyFacilities }">
-	            	<input type="hidden" class="f-y-point" value="${facility.y_cor }">
-	            	<input type="hidden" class="f-x-point" value="${facility.x_cor }">
-	            	<input type="hidden" class="f-name" value="${facility.name }">
-            	</c:forEach>
-            	<div id="map" style="width:50%;height:730px;">
-            	</div>
-            	<script>
-            	function mark_info(y_cor, x_cor, name){
-	            	var markerPosition  = new kakao.maps.LatLng(y_cor, x_cor); 
+            <c:if test="${sessionId != null}">
+	            <div class="foot-map">
+	            	<input type="hidden" id="my-y-point" value="${my_y_cor }">
+	            	<input type="hidden" id="my-x-point" value="${my_x_cor }">
+	            	<c:forEach var="facility" items="${nearbyFacilities }">
+		            	<input type="hidden" class="f-y-point" value="${facility.y_cor }">
+		            	<input type="hidden" class="f-x-point" value="${facility.x_cor }">
+		            	<input type="hidden" class="f-name" value="${facility.name }">
+	            	</c:forEach>
+	            	<div id="map" style="width:50%;height:730px;">
+	            	</div>
+	            	<script>
+	            	function mark_info(y_cor, x_cor, name){
+		            	var markerPosition  = new kakao.maps.LatLng(y_cor, x_cor); 
+		
+		            	// 마커를 생성합니다
+		            	var marker = new kakao.maps.Marker({
+		            	    position: markerPosition
+		            	});
+		
+		            	// 마커가 지도 위에 표시되도록 설정합니다
+		            	marker.setMap(map);
+		
+		            	var iwContent = '<div style="width:150px;text-align:center;padding:6px 0;">'+ name.trim() + '</div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+		            	    iwPosition = new kakao.maps.LatLng(y_cor, x_cor); //인포윈도우 표시 위치입니다
+		
+		            	// 인포윈도우를 생성합니다
+		            	var infowindow = new kakao.maps.InfoWindow({
+		            	    position : iwPosition, 
+		            	    content : iwContent 
+		            	});
+		            	infowindow.open(map, marker); 
+	            		
+	            	}
+	            		
+						var my_y_point = parseFloat(document.getElementById("my-y-point").value);
+						var my_x_point = parseFloat(document.getElementById("my-x-point").value);
+						var f_y_points = document.querySelectorAll(".f-y-point");
+						var f_x_points = document.querySelectorAll(".f-x-point");
+						var f_names = document.querySelectorAll(".f-name");					
+		            	var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+		                mapOption = {
+		                    center: new kakao.maps.LatLng(my_y_point, my_x_point), // 지도의 중심좌표
+		                    level: 3 // 지도의 확대 레벨
+		                };  
+	            		var map = new kakao.maps.Map(mapContainer, mapOption);
+	            		// 내 위치 
+	            		var points = []
+	            		mark_info(my_y_point, my_x_point, "&#128205" + "내위치");
+	        			points.push(new kakao.maps.LatLng(my_y_point, my_x_point));
+	        			
+	            		for (var i=0; i<5; i++){
+	            			mark_info(f_y_points[i].value, f_x_points[i].value, "&#127973" + f_names[i].value);
+	            			points.push(new kakao.maps.LatLng(f_y_points[i].value, f_x_points[i].value));
+	            		}
+	            		console.log(points);
+	            		var bounds = new kakao.maps.LatLngBounds();    
+						
+	            		var i, marker;
+	            		
+	            		for (i = 0; i < points.length; i++) {
+	            		    // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다
+	            		    marker =     new kakao.maps.Marker({ position : points[i] });
+	            		    marker.setMap(map);
+	            		    
+	            		    // LatLngBounds 객체에 좌표를 추가합니다
+	            		    bounds.extend(points[i]);
+	            		}
 	
-	            	// 마커를 생성합니다
-	            	var marker = new kakao.maps.Marker({
-	            	    position: markerPosition
-	            	});
-	
-	            	// 마커가 지도 위에 표시되도록 설정합니다
-	            	marker.setMap(map);
-	
-	            	var iwContent = '<div style="width:150px;text-align:center;padding:6px 0;">'+ name.trim() + '</div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-	            	    iwPosition = new kakao.maps.LatLng(y_cor, x_cor); //인포윈도우 표시 위치입니다
-	
-	            	// 인포윈도우를 생성합니다
-	            	var infowindow = new kakao.maps.InfoWindow({
-	            	    position : iwPosition, 
-	            	    content : iwContent 
-	            	});
-	            	infowindow.open(map, marker); 
-            		
-            	}
-            		
-					var my_y_point = parseFloat(document.getElementById("my-y-point").value);
-					var my_x_point = parseFloat(document.getElementById("my-x-point").value);
-					var f_y_points = document.querySelectorAll(".f-y-point");
-					var f_x_points = document.querySelectorAll(".f-x-point");
-					var f_names = document.querySelectorAll(".f-name");					
-	            	var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-	                mapOption = {
-	                    center: new kakao.maps.LatLng(my_y_point, my_x_point), // 지도의 중심좌표
-	                    level: 3 // 지도의 확대 레벨
-	                };  
-            		var map = new kakao.maps.Map(mapContainer, mapOption);
-            		// 내 위치 
-            		var points = []
-            		mark_info(my_y_point, my_x_point, "&#128205" + "내위치");
-        			points.push(new kakao.maps.LatLng(my_y_point, my_x_point));
-        			
-            		for (var i=0; i<5; i++){
-            			mark_info(f_y_points[i].value, f_x_points[i].value, "&#127973" + f_names[i].value);
-            			points.push(new kakao.maps.LatLng(f_y_points[i].value, f_x_points[i].value));
-            		}
-            		console.log(points);
-            		var bounds = new kakao.maps.LatLngBounds();    
-					
-            		var i, marker;
-            		
-            		for (i = 0; i < points.length; i++) {
-            		    // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다
-            		    marker =     new kakao.maps.Marker({ position : points[i] });
-            		    marker.setMap(map);
-            		    
-            		    // LatLngBounds 객체에 좌표를 추가합니다
-            		    bounds.extend(points[i]);
-            		}
-
-            		function setBounds() {
-            		    // LatLngBounds 객체에 추가된 좌표들을 기준으로 지도의 범위를 재설정합니다
-            		    // 이때 지도의 중심좌표와 레벨이 변경될 수 있습니다
-            		    map.setBounds(bounds);
-            		}
-            		
-            		setBounds();
-            	</script>
-	            <c:if test="${not empty nearbyFacilities}">
-				<div class="facilities">
-					<h3>나에게 가장 가까운 요양병원</h3>
-					<ul>
-						<c:forEach var="facility" items="${nearbyFacilities}">
-						<a href="/search/search2?place_name=${facility.name}&address=${facility.address}&disease=${facility.disease}&feature=${facility.feature}&price=${facility.price}&y=${facility.y_cor }&x=${facility.x_cor } ">
-							<li>
-								<div class="facility-info">
-									<div class="facility-name">${facility.name}</div>
-									<div class="facility-address" style="font-size : 15px; font-weight : 700;">${facility.address}</div>
-									<div class="facility-address" style="color : green;">${facility.disease}</div>
-									<div class="facility-address" style="color : orange;">${facility.feature}</div>
-								</div>
-									<div class="facility-price" style="color : blue;">일 이용 금액 : ${facility.price} 원&nbsp;&nbsp;&nbsp;</div>
-								<div class="facility-regdate">
-									시설 등록일:
-									<span style="color : red;"><fmt:formatDate value="${facility.reg_date}"
-										pattern="yyyy-MM-dd" /></span>
-								</div>
-							</li>
-						</a>
-						</c:forEach>
-					</ul>
-				</div>
-			</c:if>
-            </div>
+	            		function setBounds() {
+	            		    // LatLngBounds 객체에 추가된 좌표들을 기준으로 지도의 범위를 재설정합니다
+	            		    // 이때 지도의 중심좌표와 레벨이 변경될 수 있습니다
+	            		    map.setBounds(bounds);
+	            		}
+	            		
+	            		setBounds();
+	            	</script>
+		            <c:if test="${not empty nearbyFacilities}">
+					<div class="facilities">
+						<h3>나에게 가장 가까운 요양병원</h3>
+						<ul>
+							<c:forEach var="facility" items="${nearbyFacilities}">
+							<a href="/search/search2?place_name=${facility.name}&address=${facility.address}&disease=${facility.disease}&feature=${facility.feature}&price=${facility.price}&y=${facility.y_cor }&x=${facility.x_cor } ">
+								<li>
+									<div class="facility-info">
+										<div class="facility-name">${facility.name}</div>
+										<div class="facility-address" style="font-size : 15px; font-weight : 700;">${facility.address}</div>
+										<div class="facility-address" style="color : green;">${facility.disease}</div>
+										<div class="facility-address" style="color : orange;">${facility.feature}</div>
+									</div>
+										<div class="facility-price" style="color : blue;">일 이용 금액 : ${facility.price} 원&nbsp;&nbsp;&nbsp;</div>
+									<div class="facility-regdate">
+										시설 등록일:
+										<span style="color : red;"><fmt:formatDate value="${facility.reg_date}"
+											pattern="yyyy-MM-dd" /></span>
+									</div>
+								</li>
+							</a>
+							</c:forEach>
+						</ul>
+					</div>
+				</c:if>
+	            </div>
+            </c:if>
 </body>
 <script>
 document.querySelector('.scroll-icon').addEventListener('click', function() {

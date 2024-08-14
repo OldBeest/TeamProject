@@ -158,6 +158,7 @@ $(document).ready(function() {
                         <ul>
                             <li><a href="/customer/customer1_list" class="delay-1">자주묻는 질문</a></li>
                             <li><a href="/customer/customer2_list" class="delay-1">질문 게시판</a></li>
+                            <li><a href="/customer/customer3_list" class="delay-1">1:1 상담</a></li>
                         </ul>
                         <div class="sub-menu-height sub-menu-height-4"></div>
                     </li>
