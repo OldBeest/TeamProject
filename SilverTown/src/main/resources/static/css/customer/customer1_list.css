@@ -1,0 +1,165 @@
+/* Main Section */
+section {
+  margin: auto;
+  width: 90%;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 40px;
+  margin-bottom: 30px;
+  font-size: 40px;
+  background: #03C75A;
+  color: #ffffff;
+  padding: 30px;
+  text-align: center;
+}
+
+#wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between elements */
+  max-width: 450px;
+  width: 100%;
+}
+
+select, input, button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+select {
+  width: 90px; 
+}
+
+input {
+  flex: 1; 
+}
+
+button {
+  background-color: #03C75A;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+
+button i {
+  margin-right: 8px;
+  
+}
+
+img{
+ 	width:20px;
+ 	
+ }
+ 
+ 
+
+table {
+  width: 96%;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+  line-height: 40px;
+}
+
+.table-notice {
+  background-color: #03C75A;
+  color: white;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-weight: bold;
+}
+
+.table-title {
+  text-align: left;
+  font-weight: bold;
+}
+
+.table-title a{
+	text-decoration:none;
+	color:black;
+}
+
+th {
+  border: 1px solid silver;
+  border-top: 2px solid black;
+  background: #9ba19a;
+  color: white;
+  font-weight: bold;
+}
+
+td {
+  border: 1px solid silver;
+  color:black;
+  font-weight: bold;
+}
+
+
+th, td {
+  border-left: hidden;
+  border-right: hidden;
+}
+
+.page-num {
+  margin-top: 15px;
+}
+
+.page-num li {
+  width: 36px;
+  height: 35px;
+  padding: 0;
+}
+
+.first {
+  background: url(https://www.midashotel.co.kr/Midas_common/images/homepage/board/paging_first.png) no-repeat;
+}
+
+.prev {
+  background: url(https://www.midashotel.co.kr/Midas_common/images/homepage/board/paging_prev.png) no-repeat;
+}
+
+.num {
+  position: relative;
+  top: -15px;
+  height: 33px !important;
+  margin-left: 15px;
+  margin-right: 15px;
+  border: 1px #989898 solid;
+}
+
+.num > div {
+  position: relative;
+  top: 2px;
+}
+
+.next {
+  background: url(https://www.midashotel.co.kr/Midas_common/images/homepage/board/paging_next.png) no-repeat;
+}
+
+.last {
+  background: url(https://www.midashotel.co.kr/Midas_common/images/homepage/board/paging_last.png) no-repeat;
+}
+
+.write {
+  float: right;
+  width: 80px;
+  height: 50px;
+  line-height: 50px;
+  margin: 0 30px 50px 0;
+  border: 2px black solid;
+}

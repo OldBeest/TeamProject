@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.dao.Customer2Dao">
+   <!-- 게시판 리스트 -->
+	<select id="selectAll" resultType="com.java.dto.Customer2Dto">
+	  select * from
+	  (select row_number()over(order by post_group desc, post_step asc) rnum, a.* from post a
+	    <if test="category == 'post_title' or category == 'post_content' ">
+	      where ${category} like '%'||#{sWord}||'%'
+	    </if>
+	    <if test="category == 'id' or category == 'post_content' ">
+	      where ${category} like '%'||#{sWord}||'%'
+	    </if>
+	    <if test="category == 'all' ">
+	      where post_title like '%'||#{sWord}||'%' or post_content like '%'||#{sWord}||'%'
+	    </if>
+	  )
+	  where rnum between #{startRow} and #{endRow}
+	</select>
+  
+  <!-- 게시글 총 개수-->
+  <select id="selectCount" resultType="int">
+   	 select count(*) from post
+    <if test="category == 'post_title' or category == 'post_content' ">
+    	where ${category} like '%'||#{sWord}||'%'
+    </if>
+ 	<if test="category == 'id' or category == 'post_content' ">
+    	where ${category} like '%'||#{sWord}||'%'
+    </if>
+    <if test="category == 'all' ">
+    	where post_title like '%'||#{sWord}||'%' or post_content like '%'||#{sWord}||'%'
+    </if>
+  </select>
+  <!-- 게시글 1개 가져오기 : 현재글 -->
+  <select id="selectOne" resultType="com.java.dto.Customer2Dto">
+    select * from post where post_no=#{post_no}
+  </select>
+  <!-- 게시글 이전글 -->
+  <select id="selectOnePrev" resultType="com.java.dto.Customer2Dto">
+    select * from
+	(select row_number()over(order by post_group desc, post_step asc) rnum, a.* from post a)
+	where rnum=(
+	select rnum from
+	(select row_number()over(order by post_group desc, post_step asc) rnum, a.* from post a)
+	where post_no=#{post_no}
+	)-1
+  </select>
+  <!-- 게시글 다음글 -->
+  <select id="selectOneNext" resultType="com.java.dto.Customer2Dto">
+    select * from
+	(select row_number()over(order by post_group desc, post_step asc) rnum, a.* from post a)
+	where rnum=(
+	select rnum from
+	(select row_number()over(order by post_group desc, post_step asc) rnum, a.* from post a)
+	where post_no=#{post_no}
+	)+1
+  </select>
+  <!-- 게시글 저장 -->
+  <insert id="insertPost">
+    insert into post values (post_seq.nextval,#{id},#{post_title},#{post_content},
+    post_seq.currval,0,0,0,sysdate,#{post_file} )
+  </insert>
+  <!-- 조회수 증가 -->
+  <update id="updatePost_hit">
+    update post set post_hit = post_hit+1 where post_no=#{post_no}
+  </update>
+  <!-- 게시글 삭제 -->
+  <delete id="delete2Post">
+  	delete post where post_no=#{post_no}
+  </delete>
+   <!-- 게시글 수정 -->
+  <update id="update2Post">
+    update post set post_title=#{post_title},post_content=#{post_content},post_reg_date=sysdate,post_file=#{post_file}
+    where post_no=#{post_no}
+  </update>
+    <!-- 답글 저장 -->
+  <insert id="insertReply">
+    insert into post values (post_seq.nextval,#{id},#{post_title},#{post_content},
+    #{post_group},#{post_step}+1,#{post_indent}+1,0,sysdate,#{post_file} )
+  </insert>
+  <!-- bstep 1증가 -->
+  <update id="updatePost_step">
+    update post set post_step = post_step+1 where post_group=#{post_group} and post_step>#{post_step}
+  </update>
+  	<select id="selectAll1" resultType="com.java.dto.Customer2Dto">
+		select * from post order by post_group desc, post_step asc
+	</select>
+  </mapper>
