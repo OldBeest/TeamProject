@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.dao.Customer1Dao">
+   <!-- 게시판 리스트 -->
+ <select id="selectAll" resultType="com.java.dto.Customer1Dto">
+    select * from
+    (select row_number()over(order by bgroup desc, bstep asc) rnum, a.* from board a
+    <if test="category == 'btitle' or category == 'bcontent' ">
+    	where ${category} like '%'||#{sWord}||'%'
+    </if>
+
+    <if test="category == 'all' ">
+    	where btitle like '%'||#{sWord}||'%' or bcontent like '%'||#{sWord}||'%'
+    </if>
+    
+    )
+     where rnum between #{startRow} and #{endRow}
+  </select>
+  
+  <!-- 게시글 총 개수-->
+  <select id="selectCount" resultType="int">
+   	 select count(*) from board
+    <if test="category == 'btitle' or category == 'bcontent' ">
+    	where ${category} like '%'||#{sWord}||'%'
+    </if>
+
+    <if test="category == 'all' ">
+    	where btitle like '%'||#{sWord}||'%' or bcontent like '%'||#{sWord}||'%'
+    </if>
+  </select>
+  
+  <!-- 게시글 1개 가져오기 : 현재글 -->
+  <select id="selectOne" resultType="com.java.dto.Customer1Dto">
+    select * from board where bno=#{bno}
+  </select>
+  
+  <!-- 게시글 이전글 -->
+  <select id="selectOnePrev" resultType="com.java.dto.Customer1Dto">
+    select * from
+	(select row_number()over(order by bgroup desc, bstep asc) rnum, a.* from board a)
+	where rnum=(
+	select rnum from
+	(select row_number()over(order by bgroup desc, bstep asc) rnum, a.* from board a)
+	where bno=#{bno}
+	)-1
+  </select>
+  
+  <!-- 게시글 다음글 -->
+  <select id="selectOneNext" resultType="com.java.dto.Customer1Dto">
+    select * from
+	(select row_number()over(order by bgroup desc, bstep asc) rnum, a.* from board a)
+	where rnum=(
+	select rnum from
+	(select row_number()over(order by bgroup desc, bstep asc) rnum, a.* from board a)
+	where bno=#{bno}
+	)+1
+  </select>
+  
+  <!-- 게시글 저장 -->
+  <insert id="insertBoard">
+    insert into board values ( board_seq.nextval,#{id},#{btitle},#{bcontent},
+    sysdate,board_seq.currval,0,0,0,#{bfile} )
+  </insert>
+  
+  <!-- 조회수 증가 -->
+  <update id="updateBhit">
+    update board set bhit = bhit+1 where bno=#{bno}
+  </update>
+  
+  <!-- 게시글 삭제 -->
+  <delete id="deleteBoard">
+  	delete board where bno=#{bno}
+  </delete>
+  
+   <!-- 게시글 수정 -->
+  <update id="updateBoard">
+    update board set btitle=#{btitle},bcontent=#{bcontent},bdate=sysdate,bfile=#{bfile}
+    where bno=#{bno}
+  </update>
+
+  
+  </mapper>

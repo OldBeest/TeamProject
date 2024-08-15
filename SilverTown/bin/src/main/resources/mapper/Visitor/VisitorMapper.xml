@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.dao.VisitorDao">
+  <!-- board 리스트 -->
+  <select id="select" resultType="com.java.dto.VisitorDto" parameterType="java.lang.String">
+  	select * from visitor where visit_date = #{today}
+  </select>
+
+  <update id="countOne" parameterType="java.lang.String">
+  	update visitor set visitors=visitors+1 where visit_date = #{today}
+  </update>
+  
+  <update id="countMinus" parameterType="java.lang.String">
+    update visitor
+    set visitors = 
+        case 
+            when visitors > 0 then visitors - 1 
+            else 0 
+        end
+    where visit_date = #{today}
+  </update>
+  
+  <insert id="insertToday" parameterType="java.lang.String">
+  	insert into visitor (visit_date, visitors) values (#{today}, 1) <!-- 오늘 날짜 기록 -->
+  </insert>
+  
+  <!-- 방문자 수 count -->
+  <select id="checkTodayExists" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	select count(*) from visitor where visit_date = #{today}
+  </select>
+  
+  <!-- 월별 데이터 조회 -->
+  <select id="getMonthlyData" resultType="com.java.dto.VisitorDto" parameterType="int">
+  	select * from visitor
+		where extract(month from to_date(visit_date, 'yy/MM/dd')) = #{month} 
+		order by visit_date
+  </select>
+  
+</mapper>
