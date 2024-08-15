@@ -178,7 +178,7 @@ public class AdminController {
 		int city_p_cnt = analyticService.featureCount("도심위치");
 		int bighospital_n_cnt = analyticService.featureCount("대형병원인접");
 		int latest_f_cnt = analyticService.featureCount("최신시설");
-		int female_s_cnt = analyticService.featureCount("여성전문");
+		int female_s_cnt = analyticService.featureCount("여성전용");
 		int cancer_s_cnt = analyticService.featureCount("암특화치료");
 		int dementia_s_cnt = analyticService.featureCount("치매전문");
 		

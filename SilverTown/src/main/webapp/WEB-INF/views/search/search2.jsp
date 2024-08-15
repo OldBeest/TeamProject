@@ -480,7 +480,6 @@ h4 {
 				var diseases = urlParams.get("disease");
 				var features = urlParams.get("feature");
 				var price = urlParams.get("price");
-				console.log(price);
 				document.querySelector(".tag1").innerText = diseases;
 				document.querySelector(".tag2").innerText = features;								
 				document.querySelector("#initial-value").value = parseInt(price);								
@@ -579,6 +578,41 @@ h4 {
 	</div>
 	<script>
 		$(function() {
+			//마커, 인포윈도우 함수
+			function annotate_place(documents) {
+				for (var i = 0; i < 1; i++) {
+					var coords = new kakao.maps.LatLng(documents[i].y, documents[i].x);
+					var marker = new kakao.maps.Marker({
+						map : map,
+						position : coords
+					});
+					var infowindow = new kakao.maps.InfoWindow(
+							{
+								content : '<div style="width:150px;text-align:center;padding:6px 0;">'+ documents[i].place_name + '</div>'
+							});
+					infowindow.open(map, marker);
+				}
+				points.push(coords);
+			}
+			
+			function annotate_place1(documents, icon) {
+				var coords = new kakao.maps.LatLng(documents.y, documents.x);
+				var marker = new kakao.maps.Marker({
+					map : map,
+					position : coords
+
+				});
+				var infowindow = new kakao.maps.InfoWindow(
+						{
+							content : '<div style="width:150px;text-align:center;padding:6px 0;">' + icon + documents.place_name + '</div>'
+						});
+				infowindow.open(map, marker);
+				points.push(coords);
+
+			}
+			
+			
+			
 			const url = new URL(window.location.href);
 			const urlParams = url.searchParams;
 
@@ -601,161 +635,123 @@ h4 {
 			points.push(new kakao.maps.LatLng(y_cor, x_cor));
 			
 			let REST_API_KEY = '44102386908e102073a79562f84fbcf6';
-
+			
 			var markerPosition = new kakao.maps.LatLng(y_cor, x_cor);
 
 			var marker = new kakao.maps.Marker({
 				position : markerPosition
 			});
-
-			// 마커가 지도 위에 표시되도록 설정합니다
-			marker.setMap(map);
-
-			function annotate_place(documents) {
-				console.log(documents);
-				for (var i = 0; i < 1; i++) {
-					var coords = new kakao.maps.LatLng(documents[i].y, documents[i].x);
-					var marker = new kakao.maps.Marker({
-						map : map,
-						position : coords
+			var infowindow = new kakao.maps.InfoWindow(
+					{
+						content : '<div style="width:150px;text-align:center;padding:6px 0;">' + "&#10071" + "나의 위치" + '</div>'
 					});
-					var infowindow = new kakao.maps.InfoWindow(
-							{
-								content : '<div style="width:150px;text-align:center;padding:6px 0;">'+ documents[i].place_name + '</div>'
-							});
-					infowindow.open(map, marker);
-				}
-				points.push(coords);
-			}
-			function annotate_place1(documents) {
-				console.log(documents);
-				var coords = new kakao.maps.LatLng(documents.y, documents.x);
-				var marker = new kakao.maps.Marker({
-					map : map,
-					position : coords
-
-				});
-				var infowindow = new kakao.maps.InfoWindow(
-						{
-							content : '<div style="width:150px;text-align:center;padding:6px 0;">'+ documents.place_name + '</div>'
-						});
-				infowindow.open(map, marker);
-				console.log(coords);
-				points.push(coords);
-			}
-			$.ajax({
-						headers : {'Authorization' : "KakaoAK 44102386908e102073a79562f84fbcf6"},
-						url : 'https://dapi.kakao.com/v2/local/search/keyword.json',
-						type : "get",
-						data : {
-							query : "대학병원",
-							category_group_code : "HP8",
-							x : x_cor,
-							y : y_cor,
-							radius : 20000,
-							sort : "distance"
-						},
-						dataType : "json",
-						success : function(data) {
-							console.log("병원데이터 ", data);
-
-							for (var i = 0; i < 10; i++) {
-								if (data.documents[i].category_name.slice(-4) == "대학병원") {
-									annotate_place1(data.documents[i]);
-									$("#hostpital .place-name").text("이름 : " + data.documents[i].place_name)
-									$("#hostpital .place-address").text("주소 : " + data.documents[i].road_address_name)
-									$("#hostpital .distance").text("거리 : " + data.documents[i].distance + "m")
-									$("#hostpital .place-phone").text("전화번호 : " + data.documents[i].phone)
-									break;
-									//$("#hostpital .place-x").text("x좌표(경도) : " + data.documents[i].x)
-									//$("#hostpital .place-y").text("y좌표(위도) : " + data.documents[i].y)
-								}
-							}
-
-						},
-						error : function() {
-							console.log("실패");
-						}
-					}
-
-					);
-
-			$.ajax({
-						headers : {'Authorization' : "KakaoAK 44102386908e102073a79562f84fbcf6"},
-						url : 'https://dapi.kakao.com/v2/local/search/category.json?category_group_code=PM9&y='
-								+ y_cor
-								+ '&x='
-								+ x_cor
-								+ '&radius=10000&sort=distance&size=1',
-						type : "get",
-						data : {},
-						dataType : "json",
-						success : function(data) {
-
-							annotate_place1(data.documents[0]);
-
-							$("#pharmacy .place-name").text("이름 : " + data.documents[0].place_name)
-							$("#pharmacy .place-address").text("주소 : " + data.documents[0].road_address_name)
-							$("#pharmacy .distance").text("거리 : " + data.documents[0].distance + "m")
-							$("#pharmacy .place-phone") .text( "전화번호 : " + data.documents[0].phone)
-							//$("#pharmacy .place-x").text("x좌표(경도) : " + data.documents[0].x)
-							//$("#pharmacy .place-y").text("y좌표(위도) : " + data.documents[0].y)
-
-						},
-						error : function() {
-							console.log("실패");
-						}
-					}
-
-					);
-
-			$.ajax({
-						headers : {'Authorization' : "KakaoAK 44102386908e102073a79562f84fbcf6"},
-						url : 'https://dapi.kakao.com/v2/local/search/category.json?category_group_code=CS2&y=' + y_cor+ '&x=' + x_cor + '&radius=10000&sort=distance&size=1',
-						type : "get",
-						data : {},
-						dataType : "json",
-						success : function(data) {
-
-							annotate_place1(data.documents[0]);
-
-							$("#convenience-store .place-name").text("이름 : " + data.documents[0].place_name)
-							$("#convenience-store .place-address").text("주소 : " + data.documents[0].road_address_name)
-							$("#convenience-store .distance").text("거리 : " + data.documents[0].distance + "m")
-							$("#convenience-store .place-phone").text("전화번호 : " + data.documents[0].phone)
-							//$("#convenience-store .place-x").text("x좌표(경도) : " + data.documents[0].x)
-							//$("#convenience-store .place-y").text("y좌표(위도) : " + data.documents[0].y)
-
-						},
-						error : function() {
-							console.log("실패");
-						}
-					});
-			console.log(points);
+			infowindow.open(map, marker);
+						
+			//카카오 api 요청
 			
-			var bounds = new kakao.maps.LatLngBounds();    
-    		console.log("b : ", bounds);
-			
-    		var i, marker;
-    		
-    		for (i = 0; i < points.length; i++) {
-    		    // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다
-    		    marker = new kakao.maps.Marker({ position : points[i] });
-    		    marker.setMap(map);
-    		    
-    		    // LatLngBounds 객체에 좌표를 추가합니다
-    		    bounds.extend(points[i]);
-    		}
+			// AJAX 요청을 Promise로 래핑하는 함수
+			function fetchData(url, data) {
+			    return new Promise((resolve, reject) => {
+			        $.ajax({
+			            headers: {'Authorization': "KakaoAK 44102386908e102073a79562f84fbcf6"},
+			            url: url,
+			            type: "get",
+			            data: data,
+			            dataType: "json",
+			            success: resolve,
+			            error: reject
+			        });
+			    });
+			}
 
-    		function setBounds() {
-    		    // LatLngBounds 객체에 추가된 좌표들을 기준으로 지도의 범위를 재설정합니다
-    		    // 이때 지도의 중심좌표와 레벨이 변경될 수 있습니다
-    		    map.setBounds(bounds);
-    		}
-    		setBounds();
+			// AJAX 요청을 Promise로 변환
+			const getHospitals = fetchData(
+			    'https://dapi.kakao.com/v2/local/search/keyword.json',
+			    {
+			        query: "대학병원",
+			        category_group_code: "HP8",
+			        x: x_cor,
+			        y: y_cor,
+			        radius: 20000,
+			        sort: "distance"
+			    }
+			);
 
+			const getPharmacy = fetchData(
+			    'https://dapi.kakao.com/v2/local/search/category.json',
+			    {
+			        category_group_code: "PM9",
+			        y: y_cor,
+			        x: x_cor,
+			        radius: 10000,
+			        sort: "distance",
+			        size: 1
+			    }
+			);
 
+			const getConvenienceStore = fetchData(
+			    'https://dapi.kakao.com/v2/local/search/category.json',
+			    {
+			        category_group_code: "CS2",
+			        y: y_cor,
+			        x: x_cor,
+			        radius: 10000,
+			        sort: "distance",
+			        size: 1
+			    }
+			);
+
+			// Promise로 ajax 비동기 처리
+			Promise.all([getHospitals, getPharmacy, getConvenienceStore])
+			    .then(([hospitalData, pharmacyData, convenienceStoreData]) => {
+			        
+			    	// 병원 데이터 처리
+			        for (var i = 0; i < 10; i++) {
+			            if (hospitalData.documents[i].category_name.slice(-4) == "대학병원") {
+			                annotate_place1(hospitalData.documents[i], "&#127973");
+			                $("#hostpital .place-name").text("이름 : " + hospitalData.documents[i].place_name);
+			                $("#hostpital .place-address").text("주소 : " + hospitalData.documents[i].road_address_name);
+			                $("#hostpital .distance").text("거리 : " + hospitalData.documents[i].distance + "m");
+			                $("#hostpital .place-phone").text("전화번호 : " + hospitalData.documents[i].phone);
+			                points.push(new kakao.maps.LatLng(hospitalData.documents[i].y, hospitalData.documents[i].x));
+			                break;
+			            }
+			        }
+
+			        // 약국 데이터 처리
+			        annotate_place1(pharmacyData.documents[0], "&#128138");
+			        $("#pharmacy .place-name").text("이름 : " + pharmacyData.documents[0].place_name);
+			        $("#pharmacy .place-address").text("주소 : " + pharmacyData.documents[0].road_address_name);
+			        $("#pharmacy .distance").text("거리 : " + pharmacyData.documents[0].distance + "m");
+			        $("#pharmacy .place-phone").text("전화번호 : " + pharmacyData.documents[0].phone);
+			        points.push(new kakao.maps.LatLng(pharmacyData.documents[0].y, pharmacyData.documents[0].x));
+
+			        // 편의점 데이터 처리
+			        annotate_place1(convenienceStoreData.documents[0], "&#127978");
+			        $("#convenience-store .place-name").text("이름 : " + convenienceStoreData.documents[0].place_name);
+			        $("#convenience-store .place-address").text("주소 : " + convenienceStoreData.documents[0].road_address_name);
+			        $("#convenience-store .distance").text("거리 : " + convenienceStoreData.documents[0].distance + "m");
+			        $("#convenience-store .place-phone").text("전화번호 : " + convenienceStoreData.documents[0].phone);
+			        points.push(new kakao.maps.LatLng(convenienceStoreData.documents[0].y, convenienceStoreData.documents[0].x));
+			        
+			        // 마커와 Bounds 처리
+			        var bounds = new kakao.maps.LatLngBounds();
+
+			        for (var i = 0; i < points.length; i++) {
+			            var marker = new kakao.maps.Marker({ position: points[i] });
+			            marker.setMap(map);
+			            bounds.extend(points[i]);
+			        }
+
+			        // Bounds 설정
+			        map.setBounds(bounds);
+			    })
+			    .catch(error => {
+			        console.log("AJAX 요청 실패", error);
+			    });
 		});
+			
+			
 			// 리뷰 작성 및 취소 버튼 이벤트 핸들러
 			$("#submit_review").on("click",function() {
 								var reviewText = $(".review_box").val();
@@ -772,6 +768,7 @@ h4 {
 				$(".review_box").val(""); // 취소 버튼 클릭 시 입력창 초기화
 			});
 		});
+		
 	</script>
 </body>
 </html>
