@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/53a8c415f1.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script>
         function hypenTel(target) {
             target.value = target.value
@@ -40,13 +41,28 @@
         }
 
         function openAddressPopup() {
-            window.open("/member/addressSearch", "주소 검색", "width=600,height=400,scrollbars=yes");
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var address = data.roadAddress ? data.roadAddress : data.jibunAddress;
+                    document.querySelector("input[name='basic_address']").value = address;
+                }
+            }).open();
         }
 
         function validateForm(event) {
             event.preventDefault(); // 폼 제출 막기
-            var id = $("#id").val();
             var pw = $("input[name='pw']").val();
+            var pwConfirm = $("input[name='pw_confirm']").val();
+            var errorElement = $("#pwMismatchError");
+
+            // 비밀번호와 비밀번호 확인이 일치하지 않는 경우 폼을 제출하지 않음
+            if (pw !== pwConfirm) {
+            	alert("비밀번호가 일치하지 않습니다.")
+                return false;
+            }
+
+            // 나머지 필드 검증 및 폼 제출 로직...
+            var id = $("#id").val();
             var email = $("input[name='email']").val();
             var name = $("input[name='name']").val();
             var basicAddress = $("input[name='basic_address']").val();
@@ -62,12 +78,10 @@
                 return false;
             }
 
-            // 기본 주소와 상세 주소를 합쳐서 하나의 address 필드로 만듭니다.
             var fullAddress = basicAddress + " " + detailAddress;
 
             checkId(id, function(isValid) {
                 if (isValid) {
-                    // 폼 데이터를 수동으로 전송
                     $.ajax({
                         url: "/member/signup2",
                         type: "POST",
@@ -77,7 +91,7 @@
                             pw: pw,
                             email: email,
                             name: name,
-                            address: fullAddress, // 합쳐진 주소 전송
+                            address: fullAddress,
                             phone: phone,
                             birth_date: birthdate,
                             gender: gender,
@@ -116,7 +130,18 @@
                 }
             });
 
-            // 팝업 창에서 선택한 주소를 기본 주소 필드에 자동 입력
+            $("input[name='pw_confirm']").on("input", function() {
+                var pw = $("input[name='pw']").val();
+                var pwConfirm = $(this).val();
+                var errorElement = $("#pwMismatchError");
+
+                if (pw !== pwConfirm) {
+                    errorElement.text("비밀번호가 일치하지 않습니다.");
+                } else {
+                    errorElement.text(""); // 오류 메시지 제거
+                }
+            });
+
             window.addEventListener('message', function(event) {
                 if (event.data && event.data.address) {
                     document.querySelector("input[name='basic_address']").value = event.data.address;
@@ -125,6 +150,7 @@
         });
     </script>
     <style>
+        /* 기존 스타일 유지 */
         body {
             font-family: 'Noto Sans KR', sans-serif;
             background-color: #f0f8ff;
@@ -182,6 +208,18 @@
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 5px;
+        }
+        .login_pw_confirm {
+            position: relative;
+            margin-bottom: 40px; /* 메시지가 더 아래에 뜨도록 추가적인 마진 */
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 30px; /* 메시지가 더 아래에 뜨도록 마진 추가 */
+            position: absolute;
+            bottom: -30px; /* 메시지를 입력창에서 더 아래로 이동 */
+            left: 0;
         }
         .login_etc {
             display: flex;
@@ -245,6 +283,11 @@
                     <h4>*비밀번호</h4>
                     <input type="password" name="pw" placeholder="PW" />
                 </div>
+                <div class="login_pw_confirm">
+                    <h4>*비밀번호 확인</h4>
+                    <input type="password" name="pw_confirm" placeholder="비밀번호 확인" />
+                    <div class="error-message" id="pwMismatchError"></div>
+                </div>
                 <div class="login_id">
                     <h4>*이메일</h4>
                     <input type="email" name="email" placeholder="E-MAIL" />
@@ -293,7 +336,6 @@
                     <p>
                         <input type="checkbox" name="feature" value="도심위치" /> 도심위치
                         <input type="checkbox" name="feature" value="최신시설" /> 최신시설
-                        <input type="checkbox" name="feature" value="자연/전원환경" /> 자연/전원환경
                         <input type="checkbox" name="feature" value="대형병원인접" /> 대형병원인접
                         <input type="checkbox" name="feature" value="암특화치료" /> 암특화치료
                         <input type="checkbox" name="feature" value="여성전용" /> 여성전용

@@ -345,7 +345,7 @@
 		</c:when>
 		<c:otherwise>
 		<a href="/customer/customer2_view?post_no=${c2dto.post_no}&page=${map.page}&category=${map.category}&sWord=${map.sWord}">
-		<c:forEach var="i" begin="1" end="${c2dto.post_indent}" step="1">:고리가_있는_오른쪽_화살표:Re:</c:forEach>
+		<c:forEach var="i" begin="1" end="${c2dto.post_indent}" step="1">↪Re:</c:forEach>
 		${c2dto.post_title}
 		</a>
 		</c:otherwise>
