@@ -10,5 +10,6 @@ import com.java.dto.FacilityDto;
 public interface FacilityDao {
 
 	ArrayList<FacilityDto> selectAll();
-
+	
+	ArrayList<FacilityDto> selectAD();
 }

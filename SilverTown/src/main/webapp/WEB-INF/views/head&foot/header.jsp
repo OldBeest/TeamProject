@@ -50,7 +50,7 @@
 		                    <li><a href="/introduce/introduce1" class="delay-1">사이트 스토리</a></li>
 		                    <li><a href="/introduce/introduce2" class="delay-2">실버케어 플랫폼 소개</a></li>
 		                    <li><a href="/introduce/introduce3" class="delay-3">플랫폼 기술</a></li>
-                            <li><a href="https://b0a877bedc1c4654c1.gradio.live" class="delay-4">챗봇사이트(베타)</a></li>
+                            <li><a href="https://90ae3b4a4948af78df.gradio.live/" class="delay-4">챗봇사이트(베타)</a></li>
 		                </ul>
                         <div class="sub-menu-height sub-menu-height-1"></div>
                     </li>

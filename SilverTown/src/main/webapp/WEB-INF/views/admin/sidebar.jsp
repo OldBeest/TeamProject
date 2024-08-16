@@ -56,6 +56,16 @@
                     <i class="fa fa-list-alt" aria-hidden="true"></i>
                     <span>메인 웹크롤링 설정</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/youtube_links">
+                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                    <span>메인 비디오 설정</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/counsel">
+                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                    <span>1:1 상담 내역</span></a>
+            </li>
             <!-- 
 	            <li class="nav-item">
 	                <a class="nav-link" href="/admin/db">

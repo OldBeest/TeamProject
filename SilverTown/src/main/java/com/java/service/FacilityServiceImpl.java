@@ -20,4 +20,11 @@ public class FacilityServiceImpl implements FacilityService {
 		ArrayList<FacilityDto> list = facilityDao.selectAll(); 
 		return list;
 	}
+	
+	@Override
+	public ArrayList<FacilityDto> selectAD() {
+		ArrayList<FacilityDto> listAD = facilityDao.selectAD();
+		return listAD;
+	}
+	
 }

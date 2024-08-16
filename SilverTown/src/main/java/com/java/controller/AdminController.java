@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.java.dto.CounselDto;
+import com.java.dto.CrawlingDto;
 import com.java.dto.Customer2Dto;
 import com.java.dto.FacilityDto;
 import com.java.dto.MemberDto;
 import com.java.dto.VisitorDto;
 import com.java.service.AnalyticService;
+import com.java.service.CounselService;
 import com.java.service.CrawlingService;
 import com.java.service.Customer2Service;
 import com.java.service.FacilityService;
@@ -42,6 +45,8 @@ public class AdminController {
 	CrawlingService crawlingService;
 	@Autowired
 	AnalyticService analyticService;
+	@Autowired
+	CounselService counselService;
 	
 	@RequestMapping("/index")
 	public ModelAndView index() {
@@ -122,7 +127,33 @@ public class AdminController {
 		return "redirect:/admin/index";	
 	}
 	
+	//유투브 링크 수정페이지
+	@RequestMapping("/youtube_links")
+	public ModelAndView youtubeLinks() {
+	    List<CrawlingDto> videos = crawlingService.getAllVideos();
+	    ModelAndView mv = new ModelAndView();
+	    mv.addObject("videos", videos);
+	    mv.setViewName("/admin/youtube_links");
+	    return mv;
+	}
+	@PostMapping("/updateYoutubeLink")
+	public String updateYoutubeLink(@RequestParam("oldVideoUrl") String oldVideoUrl, 
+	                                @RequestParam("newVideoUrl") String newVideoUrl) {
+	    crawlingService.updateVideoUrl(oldVideoUrl, newVideoUrl);
+	    return "redirect:/admin/youtube_links";
+		}
 
+	@RequestMapping("/counsel")	//1:1 문의 페이지
+	public ModelAndView counsel_list() {
+		
+		ModelAndView mv = new ModelAndView();
+		//게시판 모든글 가져오기
+		ArrayList<CounselDto> counseldto = counselService.select();
+		mv.addObject("counseldtos", counseldto);
+		mv.setViewName("/admin/counsel");
+		return mv;
+	}// list
+	
 	@RequestMapping("/boards")	//관리자 페이지에서 게시글 삭제
 	public ModelAndView customer2_list() {
 	

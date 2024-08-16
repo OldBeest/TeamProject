@@ -60,7 +60,7 @@
   <!-- 게시글 저장 -->
   <insert id="insertPost">
     insert into post values (post_seq.nextval,#{id},#{post_title},#{post_content},
-    post_seq.currval,0,0,0,sysdate,#{post_file} )
+    post_seq.currval,0,0,0,sysdate,#{post_file},0)
   </insert>
   <!-- 조회수 증가 -->
   <update id="updatePost_hit">
@@ -78,7 +78,7 @@
     <!-- 답글 저장 -->
   <insert id="insertReply">
     insert into post values (post_seq.nextval,#{id},#{post_title},#{post_content},
-    #{post_group},#{post_step}+1,#{post_indent}+1,0,sysdate,#{post_file} )
+    #{post_group},#{post_step}+1,#{post_indent}+1,0,sysdate,#{post_file})
   </insert>
   <!-- bstep 1증가 -->
   <update id="updatePost_step">

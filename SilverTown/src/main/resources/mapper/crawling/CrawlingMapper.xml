@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.dao.CrawlingDao">
+  <!-- board 리스트 -->
+  <select id="select" resultType="com.java.dto.CrawlingDto" parameterType="java.lang.String">
+  	select * from crawlingdb
+  </select>
+	
+   <!-- 유튜브 링크 전체 가져오기 -->
+   <select id="getAllVideos" resultType="com.java.dto.CrawlingDto">
+       SELECT video_url
+       FROM CRAWLINGDB
+   </select>
+
+   <!-- 유튜브 링크 업데이트 -->
+   <update id="updateVideoUrl">
+       UPDATE CRAWLINGDB
+       SET video_url = #{newVideoUrl}
+       WHERE video_url = #{oldVideoUrl}
+   </update>
+  
+</mapper>

@@ -27,10 +27,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.java.dto.CrawlingDto;
 import com.java.dto.FacilityDto;
 import com.java.dto.MemberDto;
 import com.java.dto.OAuthTokenDto;
 import com.java.service.CrawlingService;
+import com.java.service.FacilityService;
 import com.java.service.MemberService;
 import com.java.service.RecommendService;
 import com.java.service.VisitorService;
@@ -46,6 +48,7 @@ public class FrontController {
     @Autowired private HttpSession session;
     @Autowired private CrawlingService crawlingService;
     @Autowired private RecommendService recommendService;
+    @Autowired private FacilityService facilityService;
 
     private OAuthTokenDto oAuthTokenDto;
 
@@ -82,11 +85,31 @@ public class FrontController {
                 mv.addObject("my_x_cor", my_x_cor);
                 mv.addObject("nearbyFacilities", nearbyFacilities);
             }
+        }else {
+        	 String fullAddress = "서울특별시 구로구 디지털로34길 27";
+             String region = recommendService.extractRegion(fullAddress);
+             ArrayList<Double> coordinates = recommendService.requestPoint(fullAddress);
+             
+             double my_y_cor = coordinates.get(0);
+             double my_x_cor = coordinates.get(1);
+             List<String> diseaseList = Arrays.asList("암".split(","));
+             List<String> featureList = Arrays.asList("최신시설".split(","));
+             
+             List<FacilityDto> nearbyFacilities = recommendService.getNearbyFacilities(my_y_cor, my_x_cor, diseaseList, featureList, 5);
+             mv.addObject("my_y_cor", my_y_cor);
+             mv.addObject("my_x_cor", my_x_cor);
+             mv.addObject("nearbyFacilities", nearbyFacilities);
         }
 
         // 크롤링 데이터 추가
         Elements crawl_list = crawlingService.test();
+        ArrayList<CrawlingDto> crawl_db = crawlingService.select();
+        // 광고 시설 추가
+        ArrayList<FacilityDto> listAD = facilityService.selectAD();
+        
+        mv.addObject("ad_list", listAD);
         mv.addObject("crawl_list", crawl_list);
+        mv.addObject("crawl_db", crawl_db);
         mv.addObject("sessionId", sessionId);
         mv.setViewName("/index");
 
