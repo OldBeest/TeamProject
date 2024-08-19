@@ -40,7 +40,7 @@
 ![python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 <hr>
 
-### 프레임 워크 및 라이브러리
+### 프레임워크 및 라이브러리
 #### 웹 서비스
 ![spring boot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
