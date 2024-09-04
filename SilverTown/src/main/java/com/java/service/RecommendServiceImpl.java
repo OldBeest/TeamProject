@@ -30,7 +30,7 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public ArrayList<Double> requestPoint(String address) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "KakaoAK 44102386908e102073a79562f84fbcf6");
+        headers.add("Authorization", "KakaoAK app_key"); //replace app_key
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
